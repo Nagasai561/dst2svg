@@ -45,27 +45,22 @@ std::string DSTHeader::get_clean_str_(std::string s, int start, int length) {
 void DSTBody::from_stream(std::ifstream &file) {
     char buffer[3];
     int idx = 0;
-    std::tuple<int, int, bool> decoded_command;
+    Stitch decoded_command{0, 0, false, false};
     
     file.seekg(BODY_START);
     while(file.peek() != EOF) {
         file.read(buffer, 3);
         decoded_command = decode_stitch_command_(buffer);
-        stitches.push_back(std::make_pair(
-            std::get<0>(decoded_command),
-            std::get<1>(decoded_command)
-        ));
-        if(std::get<2>(decoded_command)) {
-            color_chg_idx.push_back(idx);
-        }
+        stitches.push_back(decoded_command);
         idx++;
     }
 }
 
 // Decodes a 3-byte stitch command starting from the given pointer
-std::tuple<int, int, bool> DSTBody::decode_stitch_command_(char *start) {
+Stitch DSTBody::decode_stitch_command_(char *start) {
     int delta[2] = {0, 0};
     bool is_color_change = false;
+    bool is_jump = false;
 
     // byte-1
     for(int i=0; i<8; i++) {
@@ -113,12 +108,16 @@ std::tuple<int, int, bool> DSTBody::decode_stitch_command_(char *start) {
         }
     }
 
-    if(start[2] >= (1 << 7) + (1 << 6)) {
+    if((start[2] & (1 << 7)) && (start[2] & (1 << 6))) {
         // 6-th and 7-th bits are set, indicating a color change
         is_color_change = true;
     }
+    
+    if((start[2] & (1 << 7)) && !(start[2] & (1 << 6))) {
+       is_jump = true; 
+    }
 
-    return std::make_tuple(delta[0], delta[1], is_color_change);
+    return Stitch{delta[0], delta[1], is_jump, is_color_change};
 }
     
 void DSTBody::print_body() {
@@ -126,12 +125,16 @@ void DSTBody::print_body() {
     int color_idx = 0;
     for (int i = 0; i < stitches.size(); i++) {
         std::cout << "Stitch " << i << ": (" 
-                  << stitches[i].first << ", " 
-                  << stitches[i].second << ")";
+                  << stitches[i].delta_x << ", " 
+                  << stitches[i].delta_y << ")";
         
-        if (color_idx < color_chg_idx.size() && i == color_chg_idx[color_idx]) {
+        if (stitches[i].is_color_change) {
             std::cout << " [Color Change]";
             color_idx++;
+        }
+        
+        if (stitches[i].is_jump) {
+            std::cout << " [Jump]";
         }
         std::cout << "\n";
     }

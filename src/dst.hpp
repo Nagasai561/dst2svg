@@ -27,19 +27,29 @@ public:
     void from_stream(std::ifstream &file);
 };
 
+class Stitch {
+
+public:
+    int delta_x;
+    int delta_y;
+    bool is_jump;
+    bool is_color_change;
+    
+    Stitch(int delta_x, int delta_y, bool is_jump, bool is_color_change)
+        : delta_x(delta_x), delta_y(delta_y), is_jump(is_jump), is_color_change(is_color_change) {}
+};
+
 class DSTBody {
 private:
     static const int BODY_START = 512;
 
 public:
-    std::vector<std::pair<int, int>> stitches;
-    // List of indices in the stitch list where color changes occur.
-    std::vector<int> color_chg_idx;
+    std::vector<Stitch> stitches;
 
     void from_stream(std::ifstream &file);
     
     // Decodes a 3-byte stitch command starting from the given pointer
-    std::tuple<int, int, bool> decode_stitch_command_(char *start);    
+    Stitch decode_stitch_command_(char *start);    
     void print_body();
 };
 
