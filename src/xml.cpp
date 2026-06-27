@@ -14,7 +14,7 @@ public:
     
     ~XML() {
         if (!curr_tags.empty()) {
-            throw std::runtime_error("All XML tags not properly closed");
+            std::cerr << "Warning: Unclosed tags remain at destruction: ";
         }
     }
     
