@@ -124,12 +124,12 @@ std::tuple<int, int, bool> DSTBody::decode_stitch_command_(char *start) {
 void DSTBody::print_body() {
     std:: cout << "# BODY\n";
     int color_idx = 0;
-    for (int i = 0; i < stitches.size(); ++i) {
+    for (int i = 0; i < stitches.size(); i++) {
         std::cout << "Stitch " << i << ": (" 
                   << stitches[i].first << ", " 
                   << stitches[i].second << ")";
         
-        if (i == color_chg_idx[color_idx]) {
+        if (color_idx < color_chg_idx.size() && i == color_chg_idx[color_idx]) {
             std::cout << " [Color Change]";
             color_idx++;
         }
