@@ -29,7 +29,6 @@ public:
 
 class DSTBody {
 private:
-    static const int END = 0b00011010;
     static const int BODY_START = 512;
 
 public:

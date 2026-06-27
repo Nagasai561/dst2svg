@@ -48,7 +48,7 @@ void DSTBody::from_stream(std::ifstream &file) {
     std::tuple<int, int, bool> decoded_command;
     
     file.seekg(BODY_START);
-    while(file.peek() != EOF && file.peek() != END) {
+    while(file.peek() != EOF) {
         file.read(buffer, 3);
         decoded_command = decode_stitch_command_(buffer);
         stitches.push_back(std::make_pair(
