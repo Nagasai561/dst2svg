@@ -19,22 +19,16 @@ public:
     }
 };
 
-// This is the default color palette used in the matplotlib library.
-// i-th color corresponds to `Ci` in the matplotlib color map.
 const std::vector<std::string> color_pallete{
-    "#1f77b4",
-    "#ff7f0e",	
-    "#2ca02c",	
-    "#d62728",	
-    "#9467bd",	
-    "#8c564b",	
-    "#e377c2",	
-    "#7f7f7f",	
-    "#bcbd22",	
-    "#17becf"	
+    "#cb4d4d",
+    "#5d93da",
+    "#6ed45f",
+    "#9d53bf",
+    "#4ed2c5",
+    "#f5c609"
 };
 
-const std::string SVG_STROKE_WIDTH = "3";
+const std::string SVG_STROKE_WIDTH = "1";
 
 void write_as_svg(std::ofstream &out_stream, DSTFile &dst_file) {
     // Calculate width and height to initialize SVG
